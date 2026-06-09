@@ -17,4 +17,6 @@
 ---
 
 ### [AI 실무 기본] 공통기초 - 2주차
-ss
+- [x] **01_파이썬_중급문법1** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%952/01_%ED%8C%8C%EC%9D%B4%EC%8D%AC_%EC%A4%91%EA%B8%89%EB%AC%B8%EB%B2%952/01_%ED%8C%8C%EC%9D%B4%EC%8D%AC_%EC%A4%91%EA%B8%89%EB%AC%B8%EB%B2%952.md)
+- [x] **02_파이썬_라이브러리활용** [README.md]()
+- [x] **03_SQL** [README.md]()
