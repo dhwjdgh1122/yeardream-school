@@ -22,3 +22,4 @@
 - [x] **03_생성형 AI 기초** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%952/03_%EC%83%9D%EC%84%B1%ED%98%95%20AI%20%EA%B8%B0%EC%B4%88/%EC%83%9D%EC%84%B1%ED%98%95%20AI%20%EA%B8%B0%EC%B4%88.md)
 - [x] **04_SQL 개요** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%952/04_SQL%20%EA%B0%9C%EC%9A%94/SQL.md)
 - [x] **05_SQL 함수와 서브쿼리** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%952/05_SQL%20%ED%95%A8%EC%88%98%EC%99%80%20%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/SQL%20%ED%95%A8%EC%88%98%EC%99%80%20%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC.md)
+
