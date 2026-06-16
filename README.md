@@ -23,3 +23,7 @@
 - [x] **04_SQL 개요** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%952/04_SQL%20%EA%B0%9C%EC%9A%94/SQL.md)
 - [x] **05_SQL 함수와 서브쿼리** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%952/05_SQL%20%ED%95%A8%EC%88%98%EC%99%80%20%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/SQL%20%ED%95%A8%EC%88%98%EC%99%80%20%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC.md)
 
+
+### [AI 실무 기본] 공통기초 - 3주차
+
+- [x] **01_집합 연산자와 계층형 질의** [README.md]()
