@@ -30,3 +30,6 @@
 
 - [x] **01_집합 연산자와 계층형 질의** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%953/01_%EC%A7%91%ED%95%A9%20%EC%97%B0%EC%82%B0%EC%9E%90%EC%99%80%20%EA%B3%84%EC%B8%B5%ED%98%95%20%EC%A7%88%EC%9D%98/01_%EC%A7%91%ED%95%A9%EC%97%B0%EC%82%B0%EC%9E%90%EC%99%80%20%EA%B3%84%EC%B8%B5%ED%98%95%20%EC%A7%88%EC%9D%98.md)
 - [x] **02_JOIN 및 서브쿼리 심화** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%953/02_JOIN%20%EB%B0%8F%20%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC%20%EC%8B%AC%ED%99%94/02_JOIN%20%EB%B0%8F%20%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC%20%EC%8B%AC%ED%99%94.md)
+- [x] **03_그룹 함수와 윈도우 함수** [README.md]()
+- [x] **04_데이터베이스 개요** [README.md]()
+- [x] **05_데이터모델링과 구현** [README.md]()
