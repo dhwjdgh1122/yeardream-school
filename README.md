@@ -33,3 +33,12 @@
 - [x] **03_그룹 함수와 윈도우 함수** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%953/03_%EA%B7%B8%EB%A3%B9%20%ED%95%A8%EC%88%98%EC%99%80%20%EC%9C%88%EB%8F%84%EC%9A%B0%20%ED%95%A8%EC%88%98/03_%EA%B7%B8%EB%A3%B9%20%ED%95%A8%EC%88%98%EC%99%80%20%EC%9C%88%EB%8F%84%EC%9A%B0%20%ED%95%A8%EC%88%98.md)
 - [x] **04_데이터베이스 개요** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%953/04_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4%20%EA%B0%9C%EC%9A%94/04_%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%B2%A0%EC%9D%B4%EC%8A%A4%20%EA%B0%9C%EC%9A%94.md)
 - [x] **05_데이터모델링과 구현** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%953/05_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%AA%A8%EB%8D%B8%EB%A7%81%EA%B3%BC%20%EA%B5%AC%ED%98%84/05_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%AA%A8%EB%8D%B8%EB%A7%81%EA%B3%BC%20%EA%B5%AC%ED%98%84.md)
+
+
+---
+
+### [AI 실무 기본] 공통기초 - 4주차
+
+- [x] **01_데이터 리터러시와 Numpy기초** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%954/01_%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80%20Numpy%EA%B8%B0%EC%B4%88/01_%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80%20Numpy%EA%B8%B0%EC%B4%88.md)
+- [x] **02_pandas와 데이터 시각화** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%954/02_pandas%EC%99%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%8B%9C%EA%B0%81%ED%99%94/02_pandas%EC%99%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%8B%9C%EA%B0%81%ED%99%94.md)
+- [x] **03_통계 자료 요약** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%954/03_%ED%86%B5%EA%B3%84%20%EC%9E%90%EB%A3%8C%20%EC%9A%94%EC%95%BD/03_%ED%86%B5%EA%B3%84%20%EC%9E%90%EB%A3%8C%20%EC%9A%94%EC%95%BD.md)
