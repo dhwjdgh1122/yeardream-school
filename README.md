@@ -3,6 +3,9 @@
 - [x] **이어드림스쿨 6기 합격 및 지원동기** [tistory 블로그](https://ohjungho.tistory.com/39)
 - [x] **이어드림스쿨 OT** [tistory 블로그]()
 - [x] **1주차 회고 및 정리** [tistory 블로그]()
+- [x] **2주차 회고 및 정리** [tistory 블로그]()
+- [x] **3주차 회고 및 정리** [tistory 블로그]()
+- [x] **4주차 회고 및 정리** [tistory 블로그]()
 
 
 ## AI 실무 기본 과정
@@ -42,3 +45,8 @@
 - [x] **01_데이터 리터러시와 Numpy기초** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%954/01_%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80%20Numpy%EA%B8%B0%EC%B4%88/01_%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80%20Numpy%EA%B8%B0%EC%B4%88.md)
 - [x] **02_pandas와 데이터 시각화** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%954/02_pandas%EC%99%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%8B%9C%EA%B0%81%ED%99%94/02_pandas%EC%99%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%8B%9C%EA%B0%81%ED%99%94.md)
 - [x] **03_통계 자료 요약** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%954/03_%ED%86%B5%EA%B3%84%20%EC%9E%90%EB%A3%8C%20%EC%9A%94%EC%95%BD/03_%ED%86%B5%EA%B3%84%20%EC%9E%90%EB%A3%8C%20%EC%9A%94%EC%95%BD.md)
+
+---
+
+### [데이터 분석 개인 프로젝트]
+- [x] **TFI 스마트워크 플레이스 입지 최적화 개선** [README.md]()
