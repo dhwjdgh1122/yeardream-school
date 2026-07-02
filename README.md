@@ -50,3 +50,8 @@
 
 ### [데이터 분석 개인 프로젝트]
 - [x] **TFI 스마트워크 플레이스 입지 최적화 개선** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%B6%84%EC%84%9D%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%B6%84%EC%84%9D%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8.md)
+
+
+
+
+### [AI 실무 기본] 공통심화 - 1주차
