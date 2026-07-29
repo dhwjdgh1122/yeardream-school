@@ -60,9 +60,9 @@
 - [x] **03 머신러닝 수학1** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B3%B5%ED%86%B5%EC%8B%AC%ED%99%94/03_%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D_%EC%88%98%ED%95%991/03_%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%EC%9D%84%EC%9C%84%ED%95%9C_%EC%88%98%ED%95%991.md)
 - [x] **04 머신러닝 수학2** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B3%B5%ED%86%B5%EC%8B%AC%ED%99%94/04_%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D_%EC%88%98%ED%95%992/04_%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D_%EC%88%98%ED%95%992.md)
 
+---
 
-
-
+### [AI 실무 기본] 공통심화 - 2주차
 
 
 
