@@ -55,10 +55,10 @@
 
 ### [AI 실무 기본] 공통심화 - 1주차
 
-- [x] **01 데이터 분석 프로젝트 과정** [README.md]()
-- [x] **02 머신러닝기초** [README.md]()
-- [x] **03 머신러닝 수학1** [README.md]()
-- [x] **04 머신러닝 수학2** [README.md]()
+- [x] **01 데이터 분석 프로젝트 과정** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B3%B5%ED%86%B5%EC%8B%AC%ED%99%94/01_%EB%8D%B0%EC%9D%B4%ED%84%B0_%EB%B6%84%EC%84%9D_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EA%B3%BC%EC%A0%95/01_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B6%84%EC%84%9D%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8.md)
+- [x] **02 머신러닝기초** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B3%B5%ED%86%B5%EC%8B%AC%ED%99%94/02_%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%EA%B8%B0%EC%B4%88/02_%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%EA%B8%B0%EC%B4%88.md)
+- [x] **03 머신러닝 수학1** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B3%B5%ED%86%B5%EC%8B%AC%ED%99%94/03_%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D_%EC%88%98%ED%95%991/03_%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%EC%9D%84%EC%9C%84%ED%95%9C_%EC%88%98%ED%95%991.md)
+- [x] **04 머신러닝 수학2** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EA%B3%B5%ED%86%B5%EC%8B%AC%ED%99%94/04_%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D_%EC%88%98%ED%95%992/04_%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D_%EC%88%98%ED%95%992.md)
 
 
 
