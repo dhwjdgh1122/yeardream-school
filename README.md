@@ -84,3 +84,6 @@
 - [x] **01 HTML/CSS 기초** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C%EC%9E%90_1%EC%A3%BC%EC%B0%A8/01_HTML_CSS_%EA%B8%B0%EC%B4%88/01_HTML_CSS.md)
 - [X] **02 반응형 웹사이트** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C%EC%9E%90_1%EC%A3%BC%EC%B0%A8/02_%EC%9B%B9%20%EC%82%AC%EC%9D%B4%ED%8A%B8_%EB%B0%98%EC%9D%91%ED%98%95%EC%9B%B9/02_WEB_CSS.md)
 - [x] **03 JavaScript** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C%EC%9E%90_1%EC%A3%BC%EC%B0%A8/03_JavaScript_%EA%B8%B0%EC%B4%88/03_JavaScript.md)
+
+
+리드미파일 수정
