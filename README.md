@@ -86,4 +86,8 @@
 - [x] **03 JavaScript** [README.md](https://github.com/dhwjdgh1122/yeardream-school/blob/main/AI_%EC%8B%A4%EB%AC%B4_%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B0%9C%EB%B0%9C%EC%9E%90_1%EC%A3%BC%EC%B0%A8/03_JavaScript_%EA%B8%B0%EC%B4%88/03_JavaScript.md)
 
 
-리드미파일 수정
+
+
+
+
+자바스크립트 블로그 작성
