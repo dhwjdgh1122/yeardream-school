@@ -1,727 +1,809 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>축구 포메이션 관리 (최종 개편)</title>
-    <!-- 외부 스크립트 로딩 실패 시에도 표가 그려지도록 defer 적용 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
-    <style>
-        :root {
-            --fw-color: #ff0000;
-            --mf-color: #ffb700;
-            --df-color: #ffff00;
-            --gk-color: #92d050;
-            --ref-color: #b7e1cd;
-            --header-pink: #f4ccd3;
-            --header-blue: #9fc5e8;
-            --border-color: #000000;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>포메이션</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0b1329;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 16px;
+      min-height: 100vh;
+    }
 
-        * {
-            box-sizing: border-box;
-        }
+    /* 상단 컨트롤 바 */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
 
-        body {
-            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
-            background-color: #f8f9fa;
-            margin: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    /* 고정 제목: 포메이션 */
+    .title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
 
-        .container {
-            background-color: #ffffff;
-            padding: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            width: 100%;
-            max-width: 1000px;
-        }
+    .view-mode-group {
+      display: flex;
+      background-color: #111c38;
+      border: 1px solid #1e2d54;
+      border-radius: 8px;
+      padding: 3px;
+    }
 
-        /* 상단 버튼 영역 (모바일 2x2 배치) */
-        .action-bar {
-            margin-bottom: 15px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-        button {
-            padding: 10px 8px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #fff;
-            white-space: nowrap;
-        }
+    .mode-btn.active {
+      background-color: #0284c7;
+      color: #ffffff;
+    }
 
-        .btn-primary { background-color: #0d6efd; color: white; border-color: #0d6efd; }
-        .btn-success { background-color: #198754; color: white; border-color: #198754; }
-        .btn-danger { background-color: #dc3545; color: white; border-color: #dc3545; }
+    /* 상단 보드 레이아웃 */
+    .top-layout {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      width: 100%;
+      margin-bottom: 24px;
+    }
 
-        .table-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-        }
+    /* 보드 컨테이너 */
+    .pitch-container {
+      display: flex;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
 
-        /* 모바일 가로 스크롤 레이아웃 */
-        .main-table-container {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            touch-action: pan-x pan-y;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+    .pitch-card {
+      flex: 1 1 0;
+      min-width: 260px;
+      max-width: 380px;
+      background-color: #111c38;
+      border: 1px solid #1e2d54;
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scroll-snap-align: center;
+    }
 
-        table.main-table {
-            border-collapse: collapse;
-            font-size: 12px;
-            text-align: center;
-            background-color: #fff;
-            width: 650px;
-            min-width: 650px;
-            table-layout: fixed;
-        }
+    .pitch-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        th, td {
-            border: 1px solid var(--border-color);
-            padding: 4px;
-            height: 32px;
-            vertical-align: middle;
-            word-break: break-all;
-        }
+    .match-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
 
-        /* 구분 열 최소 폭 고정 및 가로 스크롤 처리 */
-        .pos-header {
-            width: 60px !important;
-            min-width: 60px !important;
-            font-weight: bold;
-            font-size: 12px;
-        }
+    .formation-select {
+      background-color: #0b1329;
+      color: #ffffff;
+      border: 1px solid #3b82f6;
+      border-radius: 6px;
+      padding: 3px 5px;
+      font-size: 0.78rem;
+      outline: none;
+    }
 
-        .main-table td.player-cell {
-            width: 145px;
-        }
+    /* 축구장 잔디 */
+    .soccer-pitch {
+      background: linear-gradient(180deg, #15803d 0%, #166534 100%);
+      border: 2px solid #22c55e;
+      border-radius: 8px;
+      height: 650px;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
 
-        /* [2단계 개선] 방향키 이동 시 포커스 스타일 */
-        .main-table td.player-cell:focus,
-        .side-table td[contenteditable="true"]:focus {
-            background-color: #e8f0fe !important;
-            outline: 2px solid #0d6efd;
-        }
+    .soccer-pitch::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.35);
+    }
 
-        .bg-pink { background-color: var(--header-pink); }
-        .bg-blue { background-color: var(--header-blue); font-weight: bold; }
-        .bg-fw { background-color: var(--fw-color); color: white; }
-        .bg-mf { background-color: var(--mf-color); color: #000; }
-        .bg-df { background-color: var(--df-color); color: #000; }
-        .bg-gk { background-color: var(--gk-color); color: #000; }
-        .bg-ref { background-color: var(--ref-color); color: #000; }
+    .soccer-pitch::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px; height: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 50%;
+    }
 
-        .formation-select {
-            width: 100%;
-            padding: 2px;
-            font-size: 11px;
-            font-weight: bold;
-            border: 1px solid #777;
-            border-radius: 3px;
-            background-color: #fff;
-        }
+    /* 선수 칩 */
+    .player-chip {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background-color: rgba(11, 19, 41, 0.92);
+      border: 1px solid #38bdf8;
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 2px 4px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      white-space: nowrap;
+      z-index: 10;
+    }
 
-        .spacer-row td {
-            border-left: none;
-            border-right: none;
-            height: 8px;
-            background: #f8f9fa;
-        }
+    .pos-badge {
+      background-color: #0284c7;
+      color: #ffffff;
+      border-radius: 6px;
+      padding: 1px 3px;
+      font-size: 0.6rem;
+      font-weight: 700;
+    }
 
-        /* 하단 출전 명단 영역 */
-        .side-table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
+    .player-input {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      width: 42px;
+      outline: none;
+      text-align: center;
+    }
 
-        .side-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            text-align: center;
-            table-layout: fixed;
-        }
+    /* 우측 출전 현황 보드 */
+    .summary-card {
+      width: 240px;
+      background-color: #111c38;
+      border: 1px solid #1e2d54;
+      border-radius: 12px;
+      padding: 12px;
+      flex-shrink: 0;
+    }
 
-        .side-table th { background-color: #f2f2f2; }
-        /* 입력 칸 전용 스타일 */
-        .side-table td[contenteditable="true"] {
-            width: 45%;
-        }
+    .summary-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 10px;
+    }
 
-        [contenteditable="true"] { outline: none; }
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-        td.duplicate-error {
-            background-color: #ffcdd2 !important;
-            color: #b71c1c;
-            font-weight: bold;
-        }
+    .summary-table th {
+      color: #94a3b8;
+      font-size: 0.72rem;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #1e2d54;
+      text-align: center;
+    }
+    .summary-table th:first-child { text-align: left; }
 
-        .add-row-btn {
-            width: 100%;
-            margin-top: 8px;
-            padding: 8px;
-            background-color: #f1f3f4;
-            border: 1px dashed #ccc;
-            font-weight: bold;
-        }
+    .summary-table td {
+      padding: 6px 2px;
+      font-size: 0.78rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+    }
 
-        .btn-delete {
-            color: #d93025;
-            border: none;
-            background: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    .player-name-cell {
+      font-weight: 600;
+      color: #f1f5f9;
+      text-align: left !important;
+      max-width: 65px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-        .pos-btn-group {
-            display: flex;
-            justify-content: center;
-            gap: 2px;
-            margin-top: 2px;
-        }
+    .match-badges {
+      display: flex;
+      gap: 2px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-        .pos-btn {
-            padding: 1px 4px;
-            font-size: 10px;
-            border: 1px solid #666;
-            background: #fff;
-            color: #000;
-            border-radius: 2px;
-            line-height: 1;
-        }
+    .match-badge {
+      background-color: #2563eb;
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      width: 16px; height: 16px;
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+    }
 
-        /* 데스크톱(PC) 대응 */
-        @media (min-width: 769px) {
-            .action-bar { display: flex; justify-content: flex-end; }
-            .table-wrapper { flex-direction: row; align-items: flex-start; }
-            .side-table-container { width: 250px; }
-            button { padding: 8px 12px; font-size: 13px; }
-        }
+    .gk-badge {
+      background-color: #16a34a;
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      width: 16px; height: 16px;
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+    }
 
-        @media print {
-            .action-bar, .add-row-btn, .btn-delete, .pos-btn-group, select { display: none !important; }
-            .main-table-container { overflow: visible; border: none; }
-            table.main-table { width: 100%; }
-        }
-    </style>
+    /* 통합 공유용 카드 */
+    .full-share-card {
+      background-color: #0b1329;
+      border: 2px solid #1e2d54;
+      border-radius: 12px;
+      padding: 12px;
+      max-width: 820px;
+      margin: 10px auto 0 auto;
+    }
+
+    .share-card-header {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .share-flex-container {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .share-left-table-wrap {
+      flex: 65;
+      min-width: 0;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #ffffff;
+      color: #1e293b;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .matrix-table th, .matrix-table td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 2px;
+      text-align: center;
+      font-size: 0.75rem;
+    }
+
+    .matrix-table th {
+      background-color: #93c5fd;
+      color: #0f172a;
+      font-weight: 700;
+      padding: 6px 2px;
+      line-height: 1.25;
+    }
+
+    /* 경기 헤더 밑 포메이션 표기 서브텍스트 */
+    .fmt-subtext {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #1e3a8a;
+      display: block;
+    }
+
+    .category-cell {
+      font-weight: 800;
+      color: #ffffff;
+      width: 45px;
+      font-size: 0.75rem;
+    }
+
+    .cat-fw { background-color: #dc2626; }
+    .cat-mf { background-color: #eab308; color: #1e293b; }
+    .cat-df { background-color: #facc15; color: #1e293b; }
+    .cat-gk { background-color: #22c55e; }
+
+    .matrix-player-text {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .matrix-pos-text {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .share-right-table-wrap {
+      flex: 35;
+      min-width: 0;
+    }
+
+    .light-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #ffffff;
+      color: #1e293b;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .light-summary-table th, .light-summary-table td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 2px;
+      text-align: center;
+      font-size: 0.75rem;
+    }
+
+    .light-summary-table th {
+      background-color: #93c5fd;
+      color: #0f172a;
+      font-weight: 700;
+      padding: 6px 2px;
+    }
+
+    .light-player-name {
+      font-weight: 700;
+      color: #0f172a;
+      text-align: center !important;
+    }
+
+    /* 📱 모바일 터치 스와이프 최적화 */
+    @media (max-width: 768px) {
+      .top-layout { flex-direction: column; }
+      
+      .pitch-container { 
+        overflow-x: auto; 
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px;
+        width: 100%;
+      }
+
+      .pitch-card {
+        min-width: 85vw;
+        max-width: 85vw;
+        flex: 0 0 85vw;
+        scroll-snap-align: start;
+      }
+
+      .summary-card { width: 100%; }
+      .share-flex-container { flex-direction: column; }
+      .share-right-table-wrap { width: 100%; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="container" id="captureArea">
-    <div class="action-bar">
-        <button class="btn-danger" onclick="resetData()">🧹 전체 초기화</button>
-        <button class="btn-success" onclick="saveToImage()">📸 이미지 저장</button>
-        <button onclick="window.print()">🖨️ 인쇄 / PDF</button>
-        <button class="btn-primary" onclick="exportToExcel()">📥 엑셀 다운로드</button>
+  <!-- 상단 컨트롤 바 -->
+  <div class="header-bar">
+    <div class="title">포메이션</div>
+    <div class="view-mode-group">
+      <button class="mode-btn active" id="btnAllView" onclick="setViewMode('all')">전체 보기 (보드 + 요약표)</button>
+      <button class="mode-btn" id="btnMatrixView" onclick="setViewMode('matrix')">📋 공유용 통합표 전용 모드</button>
     </div>
+  </div>
 
-    <div class="table-wrapper">
-        <!-- 메인 포메이션 라인업 테이블 -->
-        <div class="main-table-container">
-            <table class="main-table">
-                <thead>
-                    <tr class="bg-pink">
-                        <th class="pos-header bg-pink">포메이션</th>
-                        <td><select class="formation-select"><option>4-3-3</option><option>4-4-2</option><option>3-5-2</option><option>4-2-3-1</option><option>4-3-1-2</option></select></td>
-                        <td><select class="formation-select"><option>4-3-3</option><option>4-4-2</option><option>3-5-2</option><option>4-2-3-1</option><option>4-3-1-2</option></select></td>
-                        <td><select class="formation-select"><option>4-3-3</option><option>4-4-2</option><option>3-5-2</option><option>4-2-3-1</option><option>4-3-1-2</option></select></td>
-                        <td><select class="formation-select"><option>4-3-3</option><option>4-4-2</option><option>3-5-2</option><option>4-2-3-1</option><option>4-3-1-2</option></select></td>
-                    </tr>
-                    <tr class="bg-blue">
-                        <th class="pos-header bg-blue">구분</th>
-                        <td contenteditable="true" data-type="match-name" data-match="1">1경기</td>
-                        <td contenteditable="true" data-type="match-name" data-match="2">2경기</td>
-                        <td contenteditable="true" data-type="match-name" data-match="3">3경기</td>
-                        <td contenteditable="true" data-type="match-name" data-match="4">4경기</td>
-                    </tr>
-                </thead>
-                <tbody id="mainTbody"></tbody>
-            </table>
-        </div>
+  <!-- 상단: 1x4 경기장 보드 + 출전 현황 -->
+  <div class="top-layout" id="boardLayoutSection">
+    <div class="pitch-container" id="pitchContainer"></div>
 
-        <!-- 출전 명단 요약 -->
-        <div class="side-table-container">
-            <table class="side-table" id="sideTable">
-                <thead>
-                    <tr>
-                        <th style="width: 45%;">선수명</th>
-                        <th style="width: 45%;">출전 경기</th>
-                        <th style="width: 10%;"></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <button class="add-row-btn" onclick="addPlayerRow()">+ 선수 추가</button>
-        </div>
+    <div class="summary-card">
+      <div class="summary-title">📋 선수별 출전 현황</div>
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th style="width: 32%;">선수명</th>
+            <th style="width: 42%;">출전 경기</th>
+            <th style="width: 26%;">GK</th>
+          </tr>
+        </thead>
+        <tbody id="summaryTbody"></tbody>
+      </table>
     </div>
-</div>
+  </div>
 
-<script>
-    // [4단계 핵심] 전역 데이터 객체
-    let currentLineupData = {
-        posCounts: { FW: 3, MF: 3, DF: 4 },
-        matches: ["1경기", "2경기", "3경기", "4경기"],
-        lineup: {
-            FW: [["지인 / LW", "이제훈", "문동원", "정민수"], ["황태윤 / ST", "임형민", "지인", "イ재홍"], ["조환성 / RW", "황태윤", "김재호", "이우민"]],
-            MF: [["인명훈 / CAM", "조환성", "이재홍", "인명훈"], ["오정호 / LDM", "정민수", "오정호", "오정호"], ["김재호 / RDM", "유광열", "이제훈", "지인"]],
-            DF: [["유광열 / LB", "김재호", "이상옥", "문동원"], ["이우민 / LCB", "이상옥", "임형민", "이상옥"], ["정민수 / RCB", "인명훈", "조환성", "이제훈"], ["이재홍 / RB", "문동원", "이우민", "유광열"]],
-            GK: [["이제훈", "오정호", "인명훈", "조환성"]],
-            REF: [["", "이우민", "", "김재호"]]
-        }
+  <!-- 🌟 통합 공유용 카드 -->
+  <div class="full-share-card" id="shareCardSection">
+    <div class="share-card-header">포메이션</div>
+    
+    <div class="share-flex-container">
+      <!-- 좌측: 경기별 라인업 요약표 (경기명 밑에 포메이션 배치) -->
+      <div class="share-left-table-wrap">
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th style="width: 14%;">구분</th>
+              <th style="width: 21.5%;">1경기<br><span class="fmt-subtext" id="fmtHead1">(4-4-2)</span></th>
+              <th style="width: 21.5%;">2경기<br><span class="fmt-subtext" id="fmtHead2">(4-3-3)</span></th>
+              <th style="width: 21.5%;">3경기<br><span class="fmt-subtext" id="fmtHead3">(3-5-2)</span></th>
+              <th style="width: 21.5%;">4경기<br><span class="fmt-subtext" id="fmtHead4">(3-4-3)</span></th>
+            </tr>
+          </thead>
+          <tbody id="matrixTbody"></tbody>
+        </table>
+      </div>
+
+      <!-- 우측: 선수별 출전 현황 -->
+      <div class="share-right-table-wrap">
+        <table class="light-summary-table">
+          <thead>
+            <tr>
+              <th style="width: 35%;">선수명</th>
+              <th style="width: 43%;">출전 경기</th>
+              <th style="width: 22%;">GK</th>
+            </tr>
+          </thead>
+          <tbody id="shareSummaryTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 포메이션 좌표 데이터
+    const formations = {
+      '4-4-2': [
+        { pos: 'LST', top: 12, left: 32, name: '선수명' },
+        { pos: 'RST', top: 12, left: 68, name: '선수명' },
+        { pos: 'LM',  top: 38, left: 14, name: '선수명' },
+        { pos: 'LCM', top: 43, left: 36, name: '선수명' },
+        { pos: 'RCM', top: 43, left: 64, name: '선수명' },
+        { pos: 'RM',  top: 38, left: 86, name: '선수명' },
+        { pos: 'LB',  top: 62, left: 14, name: '선수명' },
+        { pos: 'LCB', top: 68, left: 36, name: '선수명' },
+        { pos: 'RCB', top: 68, left: 64, name: '선수명' },
+        { pos: 'RB',  top: 62, left: 86, name: '선수명' },
+        { pos: 'GK',  top: 88, left: 50, name: '선수명' }
+      ],
+      '4-3-3': [
+        { pos: 'ST',  top: 9,  left: 50, name: '선수명' },
+        { pos: 'LW',  top: 22, left: 20, name: '선수명' },
+        { pos: 'RW',  top: 22, left: 80, name: '선수명' },
+        { pos: 'CM',  top: 38, left: 50, name: '선수명' },
+        { pos: 'LCM', top: 48, left: 28, name: '선수명' },
+        { pos: 'RCM', top: 48, left: 72, name: '선수명' },
+        { pos: 'LB',  top: 62, left: 14, name: '선수명' },
+        { pos: 'LCB', top: 68, left: 36, name: '선수명' },
+        { pos: 'RCB', top: 68, left: 64, name: '선수명' },
+        { pos: 'RB',  top: 62, left: 86, name: '선수명' },
+        { pos: 'GK',  top: 88, left: 50, name: '선수명' }
+      ],
+      '4-2-3-1': [
+        { pos: 'ST',  top: 10, left: 50, name: '선수명' },
+        { pos: 'LAM', top: 25, left: 20, name: '선수명' },
+        { pos: 'CAM', top: 25, left: 50, name: '선수명' },
+        { pos: 'RAM', top: 25, left: 80, name: '선수명' },
+        { pos: 'LDM', top: 46, left: 34, name: '선수명' },
+        { pos: 'RDM', top: 46, left: 66, name: '선수명' },
+        { pos: 'LB',  top: 64, left: 14, name: '선수명' },
+        { pos: 'LCB', top: 69, left: 36, name: '선수명' },
+        { pos: 'RCB', top: 69, left: 64, name: '선수명' },
+        { pos: 'RB',  top: 64, left: 86, name: '선수명' },
+        { pos: 'GK',  top: 88, left: 50, name: '선수명' }
+      ],
+      '3-5-2': [
+        { pos: 'LST', top: 10, left: 35, name: '선수명' },
+        { pos: 'RST', top: 10, left: 65, name: '선수명' },
+        { pos: 'CAM', top: 24, left: 50, name: '선수명' },
+        { pos: 'CM',  top: 38, left: 50, name: '선수명' },
+        { pos: 'LM',  top: 45, left: 14, name: '선수명' },
+        { pos: 'CDM', top: 52, left: 50, name: '선수명' },
+        { pos: 'RM',  top: 45, left: 86, name: '선수명' },
+        { pos: 'LCB', top: 68, left: 26, name: '선수명' },
+        { pos: 'CB',  top: 72, left: 50, name: '선수명' },
+        { pos: 'RCB', top: 68, left: 74, name: '선수명' },
+        { pos: 'GK',  top: 88, left: 50, name: '선수명' }
+      ],
+      '3-4-3': [
+        { pos: 'ST',  top: 10, left: 50, name: '선수명' },
+        { pos: 'LW',  top: 22, left: 20, name: '선수명' },
+        { pos: 'RW',  top: 22, left: 80, name: '선수명' },
+        { pos: 'LM',  top: 45, left: 14, name: '선수명' },
+        { pos: 'LCM', top: 48, left: 36, name: '선수명' },
+        { pos: 'RCM', top: 48, left: 64, name: '선수명' },
+        { pos: 'RM',  top: 45, left: 86, name: '선수명' },
+        { pos: 'LCB', top: 68, left: 26, name: '선수명' },
+        { pos: 'CB',  top: 72, left: 50, name: '선수명' },
+        { pos: 'RCB', top: 68, left: 74, name: '선수명' },
+        { pos: 'GK',  top: 88, left: 50, name: '선수명' }
+      ]
     };
 
-    // DOM 구조가 준비되면 즉시 표 생성 및 초기 렌더링
-    document.addEventListener('DOMContentLoaded', function() {
-        // [4단계] 데이터 기반 초기 렌더링
-        renderMainTable();
-        renderSideTable();
-        setupEvents();
-    });
+    const matchState = [
+      { formation: '4-4-2', players: JSON.parse(JSON.stringify(formations['4-4-2'])) },
+      { formation: '4-3-3', players: JSON.parse(JSON.stringify(formations['4-3-3'])) },
+      { formation: '3-5-2', players: JSON.parse(JSON.stringify(formations['3-5-2'])) },
+      { formation: '3-4-3', players: JSON.parse(JSON.stringify(formations['3-4-3'])) }
+    ];
 
-    // [4단계] 메인 테이블 렌더링 함수
-    function renderMainTable() {
-        const tbody = document.getElementById('mainTbody');
-        if (!tbody) return;
-        tbody.innerHTML = '';
+    function getCategory(pos) {
+      if (['ST', 'LST', 'RST', 'LW', 'RW'].includes(pos)) return 'FW';
+      if (['CAM', 'LAM', 'RAM', 'CM', 'LCM', 'RCM', 'LM', 'RM', 'CDM', 'LDM', 'RDM'].includes(pos)) return 'MF';
+      if (['LB', 'RB', 'LCB', 'RCB', 'CB'].includes(pos)) return 'DF';
+      return 'GK';
+    }
 
-        const sections = [
-            { key: 'FW', name: 'FW', class: 'bg-fw', editable: true },
-            { key: 'MF', name: 'MF', class: 'bg-mf', editable: true },
-            { key: 'DF', name: 'DF', class: 'bg-df', editable: true },
-            { key: 'GK', name: 'GK', class: 'bg-gk', editable: false },
-            { key: 'REF', name: '주심', class: 'bg-ref', editable: false }
-        ];
+    function setViewMode(mode) {
+      const boardSection = document.getElementById('boardLayoutSection');
+      const btnAll = document.getElementById('btnAllView');
+      const btnMatrix = document.getElementById('btnMatrixView');
 
-        sections.forEach((sec, idx) => {
-            // [4단계] 전역 데이터 객체에서 행 데이터 가져옴
-            const rowsData = currentLineupData.lineup[sec.key] || [];
-            rowsData.forEach((rowCells, rIdx) => {
-                const tr = document.createElement('tr');
-                tr.dataset.section = sec.key;
-                tr.dataset.row = rIdx; // [4단계] 행 식별자
+      if (mode === 'matrix') {
+        boardSection.style.display = 'none';
+        btnAll.classList.remove('active');
+        btnMatrix.classList.add('active');
+      } else {
+        boardSection.style.display = 'flex';
+        btnAll.classList.add('active');
+        btnMatrix.classList.remove('active');
+      }
+    }
 
-                if (rIdx === 0) {
-                    const headerTd = document.createElement('th');
-                    headerTd.rowSpan = rowsData.length;
-                    headerTd.className = `${sec.class} pos-header`;
-                    let html = `<div>${sec.name}</div>`;
-                    if (sec.editable) {
-                        html += `<div class="pos-btn-group">
-                            <button class="pos-btn" onclick="changePosCount('${sec.key}', 1)">+</button>
-                            <button class="pos-btn" onclick="changePosCount('${sec.key}', -1)">-</button>
-                        </div>`;
-                    }
-                    headerTd.innerHTML = html;
-                    tr.appendChild(headerTd);
-                }
+    function renderBoard() {
+      const pitchContainer = document.getElementById('pitchContainer');
+      pitchContainer.innerHTML = '';
 
-                for (let cIdx = 0; cIdx < 4; cIdx++) {
-                    const td = document.createElement('td');
-                    td.contentEditable = "true";
-                    td.className = "player-cell";
-                    td.innerHTML = rowCells[cIdx] || "";
-                    td.dataset.col = cIdx; // [4단계] 열 식별자
-                    // [2단계 개선] 방향키 조작 이벤트 리스너 등록
-                    td.addEventListener('keydown', handleMainTableKeydown);
-                    // [4단계 핵심] 메인 테이블 입력 감지 및 양방향 반영
-                    td.addEventListener('input', handleMainTableInput);
-                    tr.appendChild(td);
-                }
-                tbody.appendChild(tr);
-            });
+      matchState.forEach((match, matchIdx) => {
+        const card = document.createElement('div');
+        card.className = 'pitch-card';
 
-            if (idx < sections.length - 1) {
-                const spacerTr = document.createElement('tr');
-                spacerTr.className = 'spacer-row';
-                spacerTr.innerHTML = '<td colspan="5"></td>';
-                tbody.appendChild(spacerTr);
+        const header = document.createElement('div');
+        header.className = 'pitch-header';
+        
+        const title = document.createElement('span');
+        title.className = 'match-title';
+        title.innerText = `${matchIdx + 1}경기`;
+
+        const select = document.createElement('select');
+        select.className = 'formation-select';
+        Object.keys(formations).forEach(fmt => {
+          const opt = document.createElement('option');
+          opt.value = fmt;
+          opt.innerText = fmt;
+          if (fmt === match.formation) opt.selected = true;
+          select.appendChild(opt);
+        });
+
+        select.addEventListener('change', (e) => {
+          const newFmt = e.target.value;
+          matchState[matchIdx].formation = newFmt;
+          matchState[matchIdx].players = JSON.parse(JSON.stringify(formations[newFmt]));
+          renderBoard();
+        });
+
+        header.appendChild(title);
+        header.appendChild(select);
+        card.appendChild(header);
+
+        const pitch = document.createElement('div');
+        pitch.className = 'soccer-pitch';
+
+        match.players.forEach((player, playerIdx) => {
+          const chip = document.createElement('div');
+          chip.className = 'player-chip';
+          chip.style.top = `${player.top}%`;
+          chip.style.left = `${player.left}%`;
+
+          const badge = document.createElement('span');
+          badge.className = 'pos-badge';
+          badge.innerText = player.pos;
+
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.className = 'player-input';
+          input.value = player.name;
+
+          input.addEventListener('input', (e) => {
+            matchState[matchIdx].players[playerIdx].name = e.target.value;
+            updateSummary();
+            updateFullMatrix();
+          });
+
+          chip.appendChild(badge);
+          chip.appendChild(input);
+          pitch.appendChild(chip);
+        });
+
+        card.appendChild(pitch);
+        pitchContainer.appendChild(card);
+      });
+
+      updateSummary();
+      updateFullMatrix();
+    }
+
+    function updateSummary() {
+      const playerData = {};
+
+      matchState.forEach((match, matchIdx) => {
+        const matchNum = matchIdx + 1;
+        match.players.forEach(player => {
+          const name = player.name.trim();
+          if (name && name !== '선수명') {
+            if (!playerData[name]) {
+              playerData[name] = { matches: new Set(), gkMatches: new Set() };
             }
+            playerData[name].matches.add(matchNum);
+            if (player.pos === 'GK') playerData[name].gkMatches.add(matchNum);
+          }
         });
+      });
 
-        // [4단계] 경기 이름 데이터 반영
-        const matchNameCells = document.querySelectorAll('td[data-type="match-name"]');
-        matchNameCells.forEach(cell => {
-            const matchIdx = cell.dataset.match - 1;
-            cell.innerText = currentLineupData.matches[matchIdx] || `${matchIdx+1}경기`;
-        });
-        
-        checkDuplicates();
-    }
+      const buildDarkRows = () => {
+        const fragment = document.createDocumentFragment();
+        Object.keys(playerData).forEach(name => {
+          const matches = Array.from(playerData[name].matches).sort((a,b)=>a-b);
+          const gkMatches = Array.from(playerData[name].gkMatches).sort((a,b)=>a-b);
+          
+          const tr = document.createElement('tr');
+          const nameTd = document.createElement('td');
+          nameTd.className = 'player-name-cell';
+          nameTd.innerText = name;
 
-    // [4단계] 출전 명단 테이블 렌더링 함수 (대폭 개편)
-    function renderSideTable() {
-        const sideTbody = document.querySelector('#sideTable tbody');
-        if (!sideTbody) return;
-        sideTbody.innerHTML = '';
+          const matchesTd = document.createElement('td');
+          const badgeGroup = document.createElement('div');
+          badgeGroup.className = 'match-badges';
+          matches.forEach(m => {
+            const badge = document.createElement('span');
+            badge.className = 'match-badge';
+            badge.innerText = m;
+            badgeGroup.appendChild(badge);
+          });
+          matchesTd.appendChild(badgeGroup);
 
-        // [4단계 핵심] 전역 데이터 객체에서 출전 명단 요약 데이터 계산
-        const playerMap = calculateMatchesFromData();
-
-        playerMap.forEach((matchesSet, name) => {
-            const sortedMatches = Array.from(matchesSet).sort((a,b)=>a-b);
-            const sorted = sortedMatches.join(',');
-            const tr = document.createElement('tr');
-            tr.dataset.playerName = name; // [4단계] 선수 식별자
-            
-            const nameTd = document.createElement('td');
-            nameTd.contentEditable = "true";
-            nameTd.innerText = name;
-            // [3단계 개선] 방향키 조작 이벤트 등록
-            nameTd.addEventListener('keydown', handleSideTableKeydown);
-            // [4단계 핵심] 출전 명단 선수명 수정 감지
-            nameTd.addEventListener('input', handleSideTableNameInput);
-
-            const matchesTd = document.createElement('td');
-            matchesTd.contentEditable = "true";
-            matchesTd.innerText = sorted;
-            // [3단계 개선] 방향키 조작 이벤트 등록
-            matchesTd.addEventListener('keydown', handleSideTableKeydown);
-            // [4단계 핵심] 출전 명단 출전 경기 수정 감지
-            matchesTd.addEventListener('input', handleSideTableMatchesInput);
-
-            const deleteTd = document.createElement('td');
-            // [4단계 핵핵심] 삭제(X) 버튼 양방향 연결
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = "btn-delete";
-            deleteBtn.innerText = "✕";
-            deleteBtn.addEventListener('click', handleSideTableDelete);
-            deleteTd.appendChild(deleteBtn);
-
-            tr.appendChild(nameTd);
-            tr.appendChild(matchesTd);
-            tr.appendChild(deleteTd);
-            sideTbody.appendChild(tr);
-        });
-    }
-
-    // [4단계] 데이터 객체에서 출전 명단 요약 계산 (DOM 안 읽음)
-    function calculateMatchesFromData() {
-        const playerMap = new Map();
-        for (const secKey in currentLineupData.lineup) {
-            const rows = currentLineupData.lineup[secKey];
-            rows.forEach(cells => {
-                cells.forEach((cellContent, idx) => {
-                    if (cellContent) {
-                        const name = cellContent.split('/')[0].trim();
-                        if (name) {
-                            if (!playerMap.has(name)) playerMap.set(name, new Set());
-                            playerMap.get(name).add(idx + 1);
-                        }
-                    }
-                });
+          const gkTd = document.createElement('td');
+          if (gkMatches.length > 0) {
+            const gkBadgeGroup = document.createElement('div');
+            gkBadgeGroup.className = 'match-badges';
+            gkMatches.forEach(m => {
+              const badge = document.createElement('span');
+              badge.className = 'gk-badge';
+              badge.innerText = m;
+              gkBadgeGroup.appendChild(badge);
             });
-        }
-        return playerMap;
-    }
+            gkTd.appendChild(gkBadgeGroup);
+          } else {
+            gkTd.innerText = '-';
+            gkTd.style.color = '#64748b';
+          }
 
-    // [4단계 핵심] 메인 테이블 입력 핸들러 (양방향 반영)
-    function handleMainTableInput(e) {
-        const cell = e.target;
-        const section = cell.closest('tr').dataset.section;
-        const row = cell.closest('tr').dataset.row;
-        const col = cell.dataset.col;
-        const content = cell.innerHTML;
-
-        // [4단계] 전역 데이터 객체 업데이트
-        currentLineupData.lineup[section][row][col] = content;
-
-        // [4단계] 우측 출전 명단 리렌더링
-        renderSideTable();
-    }
-
-    // [4단계 핵심] 출전 명단 선수명 수정 핸들러 (문제점 3 해결)
-    function handleSideTableNameInput(e) {
-        const cell = e.target;
-        const oldName = cell.closest('tr').dataset.playerName;
-        const newName = cell.innerText.trim();
-
-        if (oldName === newName || !newName) return;
-
-        // [4단계] 메인 데이터에서 모든 oldName을 newName으로 변경
-        for (const secKey in currentLineupData.lineup) {
-            currentLineupData.lineup[secKey] = currentLineupData.lineup[secKey].map(cells => 
-                cells.map(cellContent => {
-                    if (!cellContent) return cellContent;
-                    const namePart = cellContent.split('/')[0].trim();
-                    const infoPart = cellContent.split('/')[1] ? ` / ${cellContent.split('/')[1]}` : '';
-                    if (namePart === oldName) return `${newName}${infoPart}`;
-                    return cellContent;
-                })
-            );
-        }
-
-        // [4단계] 양방향 연쇄 반응
-        cell.closest('tr').dataset.playerName = newName; // 식별자 업데이트
-        renderMainTable(); // 메인 테이블 리렌더링
-    }
-
-    // [4단계 핵심] 출전 명단 출전 경기 수정 핸들러 (문제점 3 해결)
-    function handleSideTableMatchesInput(e) {
-        const cell = e.target;
-        const playerName = cell.closest('tr').dataset.playerName;
-        const newMatchesStr = cell.innerText.trim();
-        const newMatches = newMatchesStr.split(',').map(m => parseInt(m.trim())).filter(m => !isNaN(m));
-
-        if (!playerName) return;
-
-        // [4단계] 데이터 객체 업데이트: playerName이 있는 메인 테이블 셀의 내용 수정
-        for (const secKey in currentLineupData.lineup) {
-            currentLineupData.lineup[secKey] = currentLineupData.lineup[secKey].map(cells => 
-                cells.map((cellContent, idx) => {
-                    if (!cellContent) return cellContent;
-                    const namePart = cellContent.split('/')[0].trim();
-                    if (namePart === playerName) {
-                        // 수정된 출전 경기에 포함되지 않는 열의 데이터 삭제
-                        if (!newMatches.includes(idx + 1)) return "";
-                    }
-                    return cellContent;
-                })
-            );
-        }
-
-        // [4단계] 양방향 연쇄 반응
-        renderMainTable(); // 메인 테이블 리렌더링
-        // 출전 명단은 리렌더링 안 함 (사용자 입력 중 방해 방지)
-    }
-
-    // [4단계 핵심] 출전 명단 삭제(X) 버튼 핸들러 (문제점 2 해결)
-    function handleSideTableDelete(e) {
-        const btn = e.target;
-        const tr = btn.closest('tr');
-        const playerName = tr.dataset.playerName;
-
-        if (!confirm(`'${playerName}' 선수의 모든 출전 기록을 메인 라인업에서 삭제하시겠습니까?`)) return;
-
-        // [4단계] 데이터 객체 업데이트: playerName이 포함된 메인 테이블 셀 내용 완전 삭제
-        for (const secKey in currentLineupData.lineup) {
-            currentLineupData.lineup[secKey] = currentLineupData.lineup[secKey].map(cells => 
-                cells.map(cellContent => {
-                    if (!cellContent) return cellContent;
-                    const namePart = cellContent.split('/')[0].trim();
-                    if (namePart === playerName) return "";
-                    return cellContent;
-                })
-            );
-        }
-
-        // [4단계] 양방향 연쇄 반응
-        tr.remove(); // DOM 삭제
-        renderMainTable(); // 메인 테이블 리렌더링
-    }
-
-    // [1단계 개선] 선수 추가 디폴트값 변경 ('1,2' -> '0') 및 양방향 이벤트 등록
-    function addPlayerRow() {
-        const tbody = document.querySelector('#sideTable tbody');
-        if (!tbody) return;
-        const tr = document.createElement('tr');
-        tr.dataset.playerName = "선수명"; // 디폴트 식별자
-
-        const nameTd = document.createElement('td');
-        nameTd.contentEditable = "true";
-        nameTd.innerText = "선수명";
-        // [3단계 개선] 방향키 조작 이벤트 등록 (동적 추가 시 중요)
-        nameTd.addEventListener('keydown', handleSideTableKeydown);
-        // [4단계] 양방향 이벤트 등록
-        nameTd.addEventListener('input', handleSideTableNameInput);
-
-        const matchesTd = document.createElement('td');
-        matchesTd.contentEditable = "true";
-        matchesTd.innerText = "0";
-        // [3단계 개선] 방향키 조작 이벤트 등록 (동적 추가 시 중요)
-        matchesTd.addEventListener('keydown', handleSideTableKeydown);
-        // [4단계] 양방향 이벤트 등록
-        matchesTd.addEventListener('input', handleSideTableMatchesInput);
-
-        const deleteTd = document.createElement('td');
-        // [4단계 핵핵심] 삭제(X) 버튼 양방향 연결
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = "btn-delete";
-        deleteBtn.innerText = "✕";
-        deleteBtn.addEventListener('click', handleSideTableDelete);
-        deleteTd.appendChild(deleteBtn);
-
-        tr.appendChild(nameTd);
-        tr.appendChild(matchesTd);
-        tr.appendChild(deleteTd);
-        tbody.appendChild(tr);
-    }
-
-    // [4단계] DOM 조작에서 데이터 조작으로 개편
-    function changePosCount(key, delta) {
-        const counts = currentLineupData.posCounts;
-        if (counts[key] + delta < 1) return;
-        counts[key] += delta;
-        
-        // 데이터 업데이트
-        if (delta > 0) currentLineupData.lineup[key].push(["", "", "", ""]);
-        else currentLineupData.lineup[key].pop();
-        
-        // 전체 리렌더링
-        renderMainTable();
-        renderSideTable();
-    }
-
-    function setupEvents() {
-        const captureArea = document.getElementById('captureArea');
-        if (captureArea) {
-            // [4단계] 이제 전역 input 감지는 checkDuplicates만 수행
-            captureArea.addEventListener('input', checkDuplicates);
-        }
-
-        // 경기 이름 입력 감지 및 전역 데이터 반영
-        const matchNameCells = document.querySelectorAll('td[data-type="match-name"]');
-        matchNameCells.forEach(cell => {
-            cell.addEventListener('input', function(e) {
-                const matchIdx = e.target.dataset.match - 1;
-                currentLineupData.matches[matchIdx] = e.target.innerText;
-                // [4단계] 다른 열이나 출전 명단에 영향을 주지 않으므로 리렌더링 불필요
-            });
+          tr.appendChild(nameTd);
+          tr.appendChild(matchesTd);
+          tr.appendChild(gkTd);
+          fragment.appendChild(tr);
         });
-    }
+        return fragment;
+      };
 
-    // [4단계] 데이터를 읽어서 중복 체크 수행
-    function checkDuplicates() {
-        const playerCounts = new Map();
-        
-        // 데이터를 기반으로 중복 체크 로직 수행
-        // ... (현재 checkDuplicates 로직을 데이터 기반으로 개편해야 함)
-        // 일단 기존 DOM 기반 로직을 유지하여 오류 방지
-        const rows = document.querySelectorAll('#mainTbody tr:not(.spacer-row)');
-        for (let mIdx = 0; mIdx < 4; mIdx++) {
-            const counts = {};
-            const cells = [];
-            rows.forEach(r => {
-                const cell = r.querySelectorAll('td.player-cell')[mIdx];
-                if (cell) {
-                    cells.push(cell);
-                    cell.classList.remove('duplicate-error');
-                    const name = cell.innerText.split('/')[0].trim();
-                    if (name) counts[name] = (counts[name] || 0) + 1;
-                }
+      const buildLightRows = () => {
+        const fragment = document.createDocumentFragment();
+        Object.keys(playerData).forEach(name => {
+          const matches = Array.from(playerData[name].matches).sort((a,b)=>a-b);
+          const gkMatches = Array.from(playerData[name].gkMatches).sort((a,b)=>a-b);
+          
+          const tr = document.createElement('tr');
+          const nameTd = document.createElement('td');
+          nameTd.className = 'light-player-name';
+          nameTd.innerText = name;
+
+          const matchesTd = document.createElement('td');
+          const badgeGroup = document.createElement('div');
+          badgeGroup.className = 'match-badges';
+          matches.forEach(m => {
+            const badge = document.createElement('span');
+            badge.className = 'match-badge';
+            badge.innerText = m;
+            badgeGroup.appendChild(badge);
+          });
+          matchesTd.appendChild(badgeGroup);
+
+          const gkTd = document.createElement('td');
+          if (gkMatches.length > 0) {
+            const gkBadgeGroup = document.createElement('div');
+            gkBadgeGroup.className = 'match-badges';
+            gkMatches.forEach(m => {
+              const badge = document.createElement('span');
+              badge.className = 'gk-badge';
+              badge.innerText = m;
+              gkBadgeGroup.appendChild(badge);
             });
-            cells.forEach(cell => {
-                const name = cell.innerText.split('/')[0].trim();
-                if (name && counts[name] > 1) {
-                    cell.classList.add('duplicate-error');
-                }
-            });
-        }
-    }
+            gkTd.appendChild(gkBadgeGroup);
+          } else {
+            gkTd.innerText = '-';
+            gkTd.style.color = '#94a3b8';
+          }
 
-    // [2단계 개선] 메인 테이블 방향키 조작 함수
-    function handleMainTableKeydown(e) {
-        if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
-
-        e.preventDefault(); // 기본 스크롤 동작 방지
-        const currentCell = e.target;
-        const currentRow = currentCell.closest('tr');
-        const sectionCells = Array.from(currentRow.querySelectorAll('td.player-cell'));
-        const cellIndex = sectionCells.indexOf(currentCell);
-
-        let targetRow, targetCell;
-
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            const allRows = Array.from(document.querySelectorAll('#mainTbody tr:not(.spacer-row)'));
-            const currentRowIndex = allRows.indexOf(currentRow);
-            targetRow = (e.key === 'ArrowUp') ? allRows[currentRowIndex - 1] : allRows[currentRowIndex + 1];
-            if (targetRow) targetCell = targetRow.querySelectorAll('td.player-cell')[cellIndex];
-        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-            targetCell = (e.key === 'ArrowLeft') ? sectionCells[cellIndex - 1] : sectionCells[cellIndex + 1];
-        }
-
-        if (targetCell) targetCell.focus();
-    }
-
-    // [3단계 개선] 출전 명단 테이블 전용 방향키 조작 함수
-    function handleSideTableKeydown(e) {
-        if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
-
-        e.preventDefault(); // 기본 스크롤 동작 방지
-        const currentCell = e.target;
-        const currentRow = currentCell.closest('tr');
-        const tbody = currentRow.closest('tbody');
-        // '선수명'과 '출전 경기' 두 열만 가져옴
-        const inputCellsInRow = Array.from(currentRow.querySelectorAll('td[contenteditable="true"]'));
-        const cellIndex = inputCellsInRow.indexOf(currentCell);
-
-        let targetRow, targetCell;
-
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            const allRows = Array.from(tbody.querySelectorAll('tr'));
-            const currentRowIndex = allRows.indexOf(currentRow);
-            targetRow = (e.key === 'ArrowUp') ? allRows[currentRowIndex - 1] : allRows[currentRowIndex + 1];
-            if (targetRow) targetCell = targetRow.querySelectorAll('td[contenteditable="true"]')[cellIndex];
-        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-            // 두 칸 사이만 이동
-            targetCell = (e.key === 'ArrowLeft') ? inputCellsInRow[cellIndex - 1] : inputCellsInRow[cellIndex + 1];
-        }
-
-        if (targetCell) targetCell.focus();
-    }
-
-    // [4단계] 데이터 조작으로 개편
-    function resetData() {
-        if (confirm('모든 데이터를 초기화하시겠습니까?')) {
-            // 전역 데이터 객체 초기화
-            currentLineupData.posCounts = { FW: 3, MF: 3, DF: 4 };
-            currentLineupData.matches = ["1경기", "2경기", "3경기", "4경기"];
-            currentLineupData.lineup = {
-                FW: [["","","",""],["","","",""],["","","",""]],
-                MF: [["","","",""],["","","",""],["","","",""]],
-                DF: [["","","",""],["","","",""],["","","",""],["","","",""]],
-                GK: [["","","",""]],
-                REF: [["","","",""]]
-            };
-            
-            // 전체 리렌더링
-            renderMainTable();
-            renderSideTable();
-        }
-    }
-
-    function saveToImage() {
-        if (typeof html2canvas === 'undefined') {
-            alert('이미지 저장 라이브러리를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
-            return;
-        }
-        const hide = document.querySelectorAll('.action-bar, .add-row-btn, .btn-delete, .pos-btn-group, select');
-        hide.forEach(e => e.style.display = 'none');
-        html2canvas(document.getElementById('captureArea')).then(canvas => {
-            const link = document.createElement('a');
-            link.download = '축구_라인업.png';
-            link.href = canvas.toDataURL();
-            link.click();
-            hide.forEach(e => e.style.display = '');
-        }).catch(err => {
-            alert('이미지 저장 중 오류가 발생했습니다.');
-            hide.forEach(e => e.style.display = '');
+          tr.appendChild(nameTd);
+          tr.appendChild(matchesTd);
+          tr.appendChild(gkTd);
+          fragment.appendChild(tr);
         });
+        return fragment;
+      };
+
+      document.getElementById('summaryTbody').innerHTML = '';
+      document.getElementById('summaryTbody').appendChild(buildDarkRows());
+
+      document.getElementById('shareSummaryTbody').innerHTML = '';
+      document.getElementById('shareSummaryTbody').appendChild(buildLightRows());
     }
 
-    // [4단계] 데이터 중심 로직으로 개편할 필요가 있음 (일단 DOM 기반 유지)
-    function exportToExcel() {
-        const mainTable = document.querySelector('.main-table').outerHTML;
-        const sideTable = document.querySelector('#sideTable').outerHTML;
-        const blob = new Blob([`<html><meta charset="utf-8"><body><table><tr><td>${mainTable}</td><td>${sideTable}</td></tr></table></body></html>`], { type: 'application/vnd.ms-excel' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = '라인업.xls';
-        a.click();
+    function updateFullMatrix() {
+      // 1~4경기 헤더 포메이션 텍스트 자동 동기화
+      for (let i = 0; i < 4; i++) {
+        const fmtHead = document.getElementById(`fmtHead${i + 1}`);
+        if (fmtHead) {
+          fmtHead.innerText = `(${matchState[i].formation})`;
+        }
+      }
+
+      const categories = ['FW', 'MF', 'DF', 'GK'];
+      const matrixTbody = document.getElementById('matrixTbody');
+      matrixTbody.innerHTML = '';
+
+      categories.forEach(cat => {
+        const matchCatPlayers = matchState.map(m => {
+          return m.players.filter(p => getCategory(p.pos) === cat);
+        });
+
+        const maxRows = Math.max(...matchCatPlayers.map(arr => arr.length), 1);
+
+        for (let r = 0; r < maxRows; r++) {
+          const tr = document.createElement('tr');
+
+          if (r === 0) {
+            const catTd = document.createElement('td');
+            catTd.className = `category-cell cat-${cat.toLowerCase()}`;
+            catTd.rowSpan = maxRows;
+            catTd.innerText = cat;
+            tr.appendChild(catTd);
+          }
+
+          for (let mIdx = 0; mIdx < 4; mIdx++) {
+            const td = document.createElement('td');
+            const player = matchCatPlayers[mIdx][r];
+
+            if (player) {
+              const name = player.name.trim() || '선수명';
+              td.innerHTML = `<span class="matrix-player-text">${name}</span> <span class="matrix-pos-text">/${player.pos}</span>`;
+            } else {
+              td.innerText = '-';
+              td.style.color = '#cbd5e1';
+            }
+            tr.appendChild(td);
+          }
+
+          matrixTbody.appendChild(tr);
+        }
+      });
     }
-</script>
+
+    renderBoard();
+  </script>
 </body>
 </html>
